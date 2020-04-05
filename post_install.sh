@@ -1,5 +1,29 @@
 #!/bin/bash
 
+if [[ $EUID -ne 0 ]]; then
+   	echo "This script must be run as root" 
+   	exit 1
+else
+	#Update and Upgrade
+	echo "Updating and Upgrading"
+	sudo apt-get update && sudo apt-get upgrade -y
+
+	sudo apt-get install dialog -y
+	cmd=(dialog --separate-output --checklist "Please Select Software you want to install:" 22 76 16)
+	options=(1 "Build Essentials" off
+			2 "Git" off
+			3 "Cmake" off
+			4 "Wget" off
+			5 "Curl" off
+			7 "Zip/Unzip" off
+			8 "Exiftool" off
+			9 "Python3" off
+			10 "Pipenv" off
+			11 "Java" off)
+
+	choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+	clear
+
 # command_exists() tells if a given command exists.
 function command_exists() {
 	command -v "$1" >/dev/null 2>&1
